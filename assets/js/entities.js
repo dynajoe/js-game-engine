@@ -6,6 +6,7 @@ Game.Entity = function () {
    this.width = 0;
    this.height = 0;
    this.position = { x: 0, y: 0 };
+   this.zindex = 0;
 }
 
 Game.Entity.prototype.render = function () { }

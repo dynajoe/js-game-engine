@@ -22,17 +22,30 @@ Game.Controller.prototype.activeKeys = function () {
 };
 
 Game.Controller.prototype.update = function (time) {
-   
-   for (var i = 0; i < this.entities.length; i++) {
-      this.entities[i].update.call(this.entities[i], time.elapsed);
-   }
-   
-   this.context.clearRect(0, 0, this.gameboard.width, this.gameboard.height);
 
-   for (var i = 0; i < this.entities.length; i++) {
-      this.entities[i].render.call(this.entities[i], this.context);
-   }
+   var context = this.context;
+   
+   //There's no way to set the zindex of an item on the HTML5 Canvas
+   //We'll batch the rendering so that the z order of each item can be determined before drawing.
+   var batch = [];
+   
+   this.entities.forEach(function (e) {
+      e.update.call(e, time.elapsed);
 
+      if (!batch[e.zindex]) {
+         batch[e.zindex] = [e];
+      } else {
+         batch[e.zindex].push(e);         
+      }
+   });
+   
+   context.clearRect(0, 0, this.gameboard.width, this.gameboard.height);
+   
+   batch.forEach(function (b) {
+      b.forEach(function (e) {
+         e.render.call(e, context);
+      });
+   });
 };
 
 var StupidGame = (function () {
@@ -47,12 +60,10 @@ var StupidGame = (function () {
 
    }
 
-   StupidGame.prototype.update = function(time) {
-      var keys = this.activeKeys();
+   StupidGame.prototype.update = function (time) {
+      StupidGame._super.update.call(this, time);
 
-      if (keys.any) { 
-         console.log(keys);
-      }
+      var keys = this.activeKeys();
    };
 
    return StupidGame;
