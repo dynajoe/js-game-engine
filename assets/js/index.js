@@ -15,10 +15,9 @@ GameLoop.prototype.run = function () {
              };
    })();
 
-
    var loop = this;
 
-   (function animloop (now){
+   (function animloop (now) {
 
       requestAnimFrame(animloop);
 
@@ -37,7 +36,7 @@ GameLoop.prototype.run = function () {
    })();
 }
 
-$(document).ready(function () {
+window.onload = function () {
    var controller = new StupidGame(document.getElementById('game-board'));
    new GameLoop(controller).run();
-});
+};
