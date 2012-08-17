@@ -4,15 +4,23 @@ var GameLoop = function (controller) {
 
 GameLoop.prototype.run = function () {
 
+   window.requestAnimFrame = (function () {
+     return  window.requestAnimationFrame       ||
+             window.webkitRequestAnimationFrame ||
+             window.mozRequestAnimationFrame    ||
+             window.oRequestAnimationFrame      ||
+             window.msRequestAnimationFrame     ||
+             function (callback) {
+                window.setTimeout(function () { callback(new Date().getTime()); }, 1000 / 60);
+             };
+   })();
+
+
    var loop = this;
 
-   $(document).keydown(function () { 
-      loop.controller.onInput.apply(loop.controller, arguments);
-   });   
-   
-   function Loop() {
+   (function animloop (now){
 
-      var now = new Date().getTime();
+      requestAnimFrame(animloop);
 
       if (!loop.lastTime) {
          loop.lastTime = now;
@@ -22,17 +30,14 @@ GameLoop.prototype.run = function () {
 
       loop.time = now;
 
-      var time = { elapsed: loop.time - loop.lastTime, current: loop.time };
+      var timeInfo = { elapsed: loop.time - loop.lastTime, current: loop.time };
 
-      loop.controller.update.call(loop.controller, time);
+      loop.controller.update.call(loop.controller, timeInfo);
 
-      setTimeout(Loop, 10);
-   }
-
-   Loop();
+   })();
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
    var controller = new StupidGame(document.getElementById('game-board'));
    new GameLoop(controller).run();
 });

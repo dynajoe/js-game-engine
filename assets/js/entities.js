@@ -15,7 +15,7 @@ Game.Entity.prototype.update = function (elapsed) {
    var speedy = Math.sin(this.direction * Math.PI / 180) * this.speed;
 
    this.position.x = this.position.x + (speedx * elapsed);
-   this.position.y = this.position.y + (speedy * elapsed)
+   this.position.y = this.position.y + (speedy * elapsed);
 }
 
 Game.Sprite = (function () {

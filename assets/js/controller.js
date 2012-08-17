@@ -8,7 +8,18 @@ Game.Controller.prototype.constructor = function (gameboard) {
    this.entities = [];
 };
 
-Game.Controller.prototype.onInput = function () {}
+Game.Controller.prototype.activeKeys = function () {
+   var keys = KeyboardJS.activeKeys();
+   var activeKeys = {};
+  
+   keys.forEach(function (k) {
+      activeKeys[k] = true;
+   });
+
+   activeKeys.any = keys.length > 0;
+
+   return activeKeys;
+};
 
 Game.Controller.prototype.update = function (time) {
    
@@ -24,16 +35,6 @@ Game.Controller.prototype.update = function (time) {
 
 };
 
-var Keys = {
-   "LEFT": 37,
-   "RIGHT": 39,
-   "UP": 38,
-   "DOWN": 40,
-   "ENTER": 13,
-   "SPACE": 32,
-   "ESCAPE": 27
-};
-
 var StupidGame = (function () {
    
    Extends(StupidGame, Game.Controller);
@@ -46,24 +47,13 @@ var StupidGame = (function () {
 
    }
 
-   StupidGame.prototype.onInput = function (e) {
+   StupidGame.prototype.update = function(time) {
+      var keys = this.activeKeys();
 
-      switch (e.which) {
-         case Keys.LEFT:
-            this.entities[0].position.x -= 1;
-         break;
-         case Keys.RIGHT:
-            this.entities[0].position.x += 1;
-         break;
-         case Keys.UP:
-            this.entities[0].position.y -= 1;
-         break;
-         case Keys.DOWN:
-            this.entities[0].position.y += 1;
-         break;
+      if (keys.any) { 
+         console.log(keys);
       }
-
-   }
+   };
 
    return StupidGame;
 
